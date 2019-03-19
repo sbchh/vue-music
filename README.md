@@ -3,7 +3,7 @@
 ### 安装与运行
 
 ```
-git clone https://github.com/howelljiang1992/vue-music
+git clone https://github.com/sbchh/vue-music
 
 cd vue-music
 
