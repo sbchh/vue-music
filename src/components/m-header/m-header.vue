@@ -25,7 +25,7 @@
     .icon
       display: inline-block
       vertical-align: top
-      margin-top: 7px
+      margin-top: 2px
       width: 30px
       height: 32px
       margin-right: 2px
@@ -42,7 +42,7 @@
       right: 0
       .icon-mine
         display: block
-        padding: 12px
+        padding: 13px
         font-size: 24px
         color: $color-theme
 </style>
