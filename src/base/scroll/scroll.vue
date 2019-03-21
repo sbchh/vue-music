@@ -17,11 +17,15 @@
       },
       click: {
         type: Boolean,
-        default: false
+        default: true
       },
       data: {
         type: Array,
         default: null
+      },
+      refreshDelay: {
+        type: Number,
+        default: 20
       }
     },
 
@@ -36,7 +40,7 @@
       // 初始化滚动方法
       _initScroll () {
         if (!this.$refs.wrapper) {
-          return
+          return false
         }
         this.scroll = new BScroll(this.$refs.wrapper, {
           probeType: this.probeType,
@@ -56,14 +60,15 @@
       // 刷新方法 重新计算滚动区域高度
       refresh () {
         this.scroll && this.scroll.refresh()
-      },
+      }
+    },
 
-      watch: {
-        data () {
-          setTimeout(() => {
-            this.refresh()
-          }, 20)
-        }
+    // 延迟监测滚动事件
+    watch: {
+      data () {
+        setTimeout(() => {
+          this.refresh()
+        }, this.refreshDelay)
       }
     }
   }
