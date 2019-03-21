@@ -38,18 +38,18 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     },
 
     // 利用axios跳过qq服务器 获取歌单数据 41-68
-    before(app){
-      app.get( '/api/getDiscList', function(req, res) {
+    before (app) {
+      app.get('/api/getDiscList', function (req, res) {
         //这里是正常请求的地址
         const url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
         //通过axios在nodejs中发送HTTP请求时，带上指定的headers以及params
-        axios.get( url, {
+        axios.get(url, {
           headers: {
             referer: 'https://y.qq.com/',
             host: 'c.y.qq.com'
           },
           params: req.query
-        } ).then((response) => {
+        }).then((response) => {
           // res.json(response.data)
           //得到的歌词数据是JSONP形式，需要将其转为JSON
           var ret = response.data
@@ -61,10 +61,24 @@ const devWebpackConfig = merge(baseWebpackConfig, {
             }
           }
           res.json(ret)
-        } ).catch((err) => {
+        }).catch((err) => {
           console.log(err)
         })
       })
+        // app.get('api/getSingerList', function (req, res) {
+        //   const singerUrl = 'https://c.y.qq.com/v8/fcg-bin/v8.fcg'
+        //   axios.get(singerUrl, {
+        //     headers: {
+        //       referer: 'https://c.y.qq.com/',
+        //       host: 'c.y.qq.com'
+        //     },
+        //     params: req.query
+        //   }).then((response) => {
+        //     res.json(response.data)
+        //   }).catch((e) => {
+        //     console.log(e)
+        //   })
+        // })
     },
     hot: true,
     contentBase: false, // since we use CopyWebpackPlugin.
