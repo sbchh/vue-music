@@ -56,14 +56,15 @@
       // 刷新方法 重新计算滚动区域高度
       refresh () {
         this.scroll && this.scroll.refresh()
-      },
+      }
+    },
 
-      watch: {
-        data () {
-          setTimeout(() => {
-            this.refresh()
-          }, 20)
-        }
+    // 延迟监测滚动事件
+    watch: {
+      data () {
+        setTimeout(() => {
+          this.refresh()
+        }, 20)
       }
     }
   }
