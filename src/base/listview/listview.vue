@@ -2,14 +2,14 @@
   <scroll class="listview"
           :data="data"
           ref="listview"
-          :listenScroll="listenScroll"
+          :listen-scroll="listenScroll"
           :probeType="probeType"
           @scroll="scroll">
     <ul>
       <li v-for="(group, index) in data" :key="index" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
-          <li v-for="(item,index) in group.items" :key="index" class="list-group-item">
+          <li @click="selectItem(item)" v-for="(item,index) in group.items" :key="index" class="list-group-item">
             <img class="avatar" v-lazy="item.avatar"/>
             <span class="name">{{item.name}}</span>
           </li>
@@ -26,14 +26,22 @@
         </li>
       </ul>
     </div>
+    <div class="list-fixed" v-show="fixedTitle" ref="fixed">
+      <div class="fixed-title">{{fixedTitle}}</div>
+    </div>
+    <div v-show="!data.length" class="loading-container">
+      <loading></loading>
+    </div>
   </scroll>
 </template>
 
 <script type="text/ecmascript-6">
+  import Loading from 'base/loading/loading'
   import Scroll from 'base/scroll/scroll'
   import { getData } from 'common/js/dom'
 
   const ANCHOR_HEIGHT = 18
+  const TITLE_HEIGHT = 30
 
   export default {
 
@@ -49,7 +57,8 @@
     data () {
       return {
         scrollY: -1,
-        currentIndex: 0
+        currentIndex: 0,
+        diff: -1
       }
     },
     // 定义部分结构体
@@ -66,10 +75,23 @@
         return this.data.map((group) => {
           return group.title.substr(0, 1)
         })
+      },
+
+      // 计算左侧滚动状态下滚轮固定的位置
+      fixedTitle () {
+        if (this.scrollY > 0) {
+          return ''
+        }
+        return this.data[this.currentIndex] ? this.data[this.currentIndex].title : ''
       }
+
     },
     // 实现的方法
     methods: {
+      // 设置页面点击事件
+      selectItem (item) {
+        this.$emit('select', item)
+      },
       // 右侧列表点击事件 e为对应字母的元素 实现点击相应字母左侧列表跳到对应的栏目上
       onShortcutTouchStart (e) {
         let anchorIndex = getData(e.target, 'index')
@@ -90,6 +112,11 @@
         // 得到move时的anchorIndex
         let anchorIndex = parseInt(this.touch.anchorIndex) + delta
         this._scrollTo(anchorIndex)
+      },
+
+      // 刷新
+      refresh () {
+        this.$refs.listview.refresh()
       },
 
       // 根据监听到的pos的x和y来绑定左右侧位置
@@ -133,6 +160,7 @@
     // 观测数据
     watch: {
       data () {
+        this.$refs.fixed.style.background = '#157778'
         setTimeout(() => {
           this._calculateHeight()
         }, 20)
@@ -151,18 +179,32 @@
           let height1 = listHeight[i]
           let height2 = listHeight[i + 1]
           if (-newY >= height1 && -newY < height2) {
+            // 计算当前区域位置
             this.currentIndex = i
+            // 计算滚动差
+            this.diff = height2 + newY
             return
           }
         }
         // 当滚动到底部，且-newY大于最后一个元素的上限
         this.currentIndex = listHeight.length - 2
+      },
+      // 观测滚动差
+      diff (newVal) {
+        let fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0
+        if (this.fixedTop === fixedTop) {
+          // 当fixedTop和原本一致时
+          return
+        }
+        this.fixedTop = fixedTop
+        this.$refs.fixed.style.transform = `translate3d(0,${fixedTop}px,0)`
       }
     },
 
     // 注册组件
     components: {
-      Scroll
+      Scroll,
+      Loading
     }
   }
 </script>
@@ -227,7 +269,7 @@
         padding-left: 20px
         font-size: $font-size-small
         color: $color-text-l
-        background: $color-highlight-background
+        background: $color-background-d
     .loading-container
       position: absolute
       width: 100%
