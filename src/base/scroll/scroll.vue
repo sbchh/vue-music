@@ -23,6 +23,11 @@
         type: Array,
         default: null
       },
+      // 监听滚动事件 获取滚动位置的x,y轴
+      listenScroll: {
+        type: Boolean,
+        default: false
+      },
       refreshDelay: {
         type: Number,
         default: 20
@@ -46,6 +51,12 @@
           probeType: this.probeType,
           click: this.click
         })
+        if (this.listenScroll) {
+          let me = this
+          this.scroll.on('scroll', (pos) => {
+            me.$emit('scroll', pos)
+          })
+        }
       },
 
       // 代理方法
@@ -60,6 +71,16 @@
       // 刷新方法 重新计算滚动区域高度
       refresh () {
         this.scroll && this.scroll.refresh()
+      },
+
+      // 滚动到相应位置 apply接受参数
+      scrollTo () {
+        this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
+      },
+
+      // 滚动到具体元素
+      scrollToElement () {
+        this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
       }
     },
 
