@@ -3,14 +3,26 @@
     <div class="back">
       <i class="icon-back"></i>
     </div>
-    <h1 class="title"></h1>
-    <div class="bg-image">
+    <h1 class="title" v-html="title"></h1>
+    <div class="bg-image" :style="bgStyle" ref="bgImage">
       <div class="filter"></div>
     </div>
+    <div class="bg-layer" ref="layer"></div>
+    <scroll @scroll="scroll" :probe-type="probeType" :listen-scroll="listenScroll" class="list" :data="songs"
+            ref="list">
+      <div class="song-list-wrapper">
+        <song-list :songs="songs"></song-list>
+      </div>
+    </scroll>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import Scroll from 'base/scroll/scroll'
+  import SongList from 'base/song-list/song-list'
+
+  const RESERVED_HEIGHT = 40
+
   export default {
     // 接受数据
     props: {
@@ -26,6 +38,55 @@
         type: String,
         default: ''
       }
+    },
+    data () {
+      return {
+        scrollY: 0
+      }
+    },
+    computed: {
+      // 歌手页面背景图片
+      bgStyle () {
+        return `background-image:url(${this.bgImage})`
+      }
+    },
+    created () {
+      this.probeType = 3
+      this.listenScroll = true
+    },
+    // 获取不同页面下的顶部区域Top值 即背景图的高度
+    mounted () {
+      this.imageHeight = this.$refs.bgImage.clientHeight
+      this.minTranslateY = RESERVED_HEIGHT - this.imageHeight
+      this.$refs.list.$el.style.top = `${this.imageHeight}px`
+    },
+    methods: {
+      scroll (pos) {
+        this.scrollY = pos.y
+      }
+    },
+    watch: {
+      scrollY (newY) {
+        let translateY = Math.max(this.minTranslateY, newY)
+        let zIndex = 0
+        this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
+        this.$refs.layer.style['webkitTransform'] = `translate3d(0,${translateY}px,0)`
+        // 如果歌曲列表滚动到顶部 设置图片层为顶部
+        if (newY < this.minTranslateY) {
+          zIndex = 10
+          this.$refs.bgImage.style.paddingTop = 0
+          this.$refs.bgImage.style.height = `${RESERVED_HEIGHT}px`
+        } else {
+          // 恢复图片状态
+          this.$refs.bgImage.style.paddingTop = '70%'
+          this.$refs.bgImage.style.height = 0
+        }
+        this.$refs.bgImage.style.zIndex = zIndex
+      }
+    },
+    components: {
+      Scroll,
+      SongList
     }
   }
 </script>
