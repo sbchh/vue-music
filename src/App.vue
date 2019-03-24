@@ -8,7 +8,7 @@
   </div>
 </template>
 
-<script type="text/ecmascript-6">
+<script>
 	import MHeader from 'components/m-header/m-header'
   import Tab from 'components/tab/tab'
 	export default {
@@ -19,5 +19,9 @@
 	}
 </script>
 
-<style scoped lang="stylus" rel="stylesheet/stylus">
+<style lang="stylus" scoped>
+  @import 'common/stylus/variable'
+
+  #app
+    color: $color-theme
 </style>

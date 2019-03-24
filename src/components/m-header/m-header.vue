@@ -2,8 +2,8 @@
   <div class="m-header">
     <div class="icon"></div>
     <h1 class="text">Listen Two</h1>
-    <router-link tag="div" class="mine" to="/user">
-      <i class="icon-mine">&#xe64e;</i>
+    <router-link to="/user" class="mine" tag="div">
+      <i class="icon-mine"></i>
     </router-link>
   </div>
 </template>
@@ -12,7 +12,7 @@
   export default {}
 </script>
 
-<style scoped lang="stylus" rel="stylesheet/stylus">
+<style lang="stylus" scoped>
   @import "~common/stylus/variable"
   @import "~common/stylus/mixin"
 
@@ -41,7 +41,7 @@
       top: 0
       right: 0
       .icon-mine
-        display: block
+        display: inline-block
         padding: 13px
         font-size: 24px
         color: $color-theme
