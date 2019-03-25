@@ -1,7 +1,14 @@
-// 状态管理
+// 状态管理 只保留最基础的数据
+import { playMode } from 'store/config'
 
 const state = {
-  singer: {}
+  singer: {},
+  playing: false,
+  fullScreen: false,
+  playlist: [],
+  sequenceList: [],
+  mode: playMode.sequence,
+  currentIndex: -1
 }
 
 export default state
