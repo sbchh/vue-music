@@ -1,6 +1,6 @@
 // 异步操作/修改 或 对mutation做一些封装
 
-import *as types from './mutation-types'
+import * as types from './mutation-types'
 
 export const selectPlay = function ({commit, state}, {list, index}) {
   // 提交到mutation
@@ -9,4 +9,7 @@ export const selectPlay = function ({commit, state}, {list, index}) {
   commit(types.SET_CURRENT_INDEX, index)
   commit(types.SET_FULL_SCREEN, true)
   commit(types.SET_PLAYING_STATE, true)
+  if (state.mode) {
+
+  }
 }
