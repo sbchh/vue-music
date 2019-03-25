@@ -17,7 +17,7 @@
     <scroll @scroll="scroll" :probe-type="probeType" :listen-scroll="listenScroll" class="list" :data="songs"
             ref="list">
       <div class="song-list-wrapper">
-        <song-list :songs="songs"></song-list>
+        <song-list @select="selectItem" :songs="songs"></song-list>
       </div>
       <div class="loading-container" v-show="!songs.length">
         <loading></loading>
@@ -31,6 +31,7 @@
   import SongList from 'base/song-list/song-list'
   import Loading from 'base/loading/loading'
   import { prefixStyle } from 'common/js/dom'
+  import { mapActions } from 'vuex'
 
   const RESERVED_HEIGHT = 40
   const transform = prefixStyle('transform')
@@ -79,7 +80,17 @@
       },
       back () {
         this.$router.back()
-      }
+      },
+      selectItem (item, index) {
+        // 设置点击歌单后的事件 播放整个列表/当前这首歌
+        this.selectPlay({
+          list: this.songs,
+          index
+        })
+      },
+      ...mapActions([
+        'selectPlay'
+      ])
     },
     watch: {
       scrollY (newY) {
