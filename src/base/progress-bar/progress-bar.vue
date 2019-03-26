@@ -58,7 +58,10 @@
       },
       // 进度条点击交互
       progressClick (e) {
-        this._offset(e.offsetX)
+        // 利用PageX与左边界的BoundingClientRect的值进行对比获取
+        const rect = this.$refs.progressBar.getBoundingClientRect()
+        const offsetWidth = e.pageX - rect.left - progressBtnWidth / 2
+        this._offset(offsetWidth)
         this._triggerPercent(e.offsetX)
       },
       // 滑动滑块或点击进度条后 修改进度条所在位置

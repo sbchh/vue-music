@@ -1,5 +1,5 @@
 // 状态管理 只保留最基础的数据
-import { playMode } from 'store/config'
+import { playMode } from 'common/js/config'
 
 const state = {
   singer: {},
