@@ -91,6 +91,7 @@
       // 随机播放歌曲
       playRandom () {
         this.randomPlay({
+          // 传入当前歌手歌曲
           list: this.songs
         })
       },

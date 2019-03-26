@@ -37,7 +37,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       ],
     },
 
-    // 利用axios跳过qq服务器 获取歌单数据 41-68
+    // 利用axios跳过qq服务器 获取歌单数据 41-68 获取歌词数据
     before (app) {
       app.get('/api/getDiscList', function (req, res) {
         //这里是正常请求的地址
@@ -50,10 +50,24 @@ const devWebpackConfig = merge(baseWebpackConfig, {
           },
           params: req.query
         }).then((response) => {
-          // res.json(response.data)
-          //得到的歌词数据是JSONP形式，需要将其转为JSON
+          res.json(response.data)
+        }).catch((err) => {
+          console.log(err)
+        })
+      })
+
+      app.get('/api/lyric', function (req, res) {
+        var url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg'
+
+        axios.get(url, {
+          headers: {
+            referer: 'https://y.qq.com/',
+            host: 'c.y.qq.com'
+          },
+          params: req.query
+        }).then((response) => {
           var ret = response.data
-          if (typeof ret === 'string') {
+          if(typeof ret ==='string'){
             var reg = /^\w+\(({[^()]+})\)$/
             var matches = ret.match(reg)
             if (matches) {
@@ -61,24 +75,10 @@ const devWebpackConfig = merge(baseWebpackConfig, {
             }
           }
           res.json(ret)
-        }).catch((err) => {
-          console.log(err)
+        }).catch((e) => {
+          console.log(e)
         })
       })
-        // app.get('api/getSingerList', function (req, res) {
-        //   const singerUrl = 'https://c.y.qq.com/v8/fcg-bin/v8.fcg'
-        //   axios.get(singerUrl, {
-        //     headers: {
-        //       referer: 'https://c.y.qq.com/',
-        //       host: 'c.y.qq.com'
-        //     },
-        //     params: req.query
-        //   }).then((response) => {
-        //     res.json(response.data)
-        //   }).catch((e) => {
-        //     console.log(e)
-        //   })
-        // })
     },
     hot: true,
     contentBase: false, // since we use CopyWebpackPlugin.
