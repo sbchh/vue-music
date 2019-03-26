@@ -63,7 +63,9 @@
           <p class="desc" v-html="currentSong.singer"></p>
         </div>
         <div class="control">
-          <i @click.stop="togglePlaying" :class="miniIcon"></i>
+          <progress-circle :radius="radius" :percent="percent">
+            <i @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
+          </progress-circle>
         </div>
         <div class="control">
           <i class="icon-playlist"></i>
@@ -79,6 +81,7 @@
   import animations from 'create-keyframe-animation'
   import { prefixStyle } from 'common/js/dom'
   import ProgressBar from 'base/progress-bar/progress-bar'
+  import ProgressCircle from 'base/progress-circle/progress-circle'
 
   const transform = prefixStyle('transform')
 
@@ -88,7 +91,9 @@
         // 当前歌曲是否准备播放
         songReady: false,
         // 当前音乐时长
-        currentTime: 0
+        currentTime: 0,
+        // mini进度条半径
+        radius: 32
       }
     },
     computed: {
@@ -266,7 +271,8 @@
       }
     },
     components: {
-      ProgressBar
+      ProgressBar,
+      ProgressCircle
     }
   }
 </script>
@@ -462,7 +468,7 @@
       z-index: 180
       width: 100%
       height: 60px
-      background: $color-highlight-background
+      background: $color-wechat-black
       &.mini-enter-active, &.mini-leave-active
         transition: all 0.4s
       &.mini-enter, &.mini-leave-to
@@ -499,7 +505,7 @@
         padding: 0 10px
         .icon-play-mini, .icon-pause-mini, .icon-playlist
           font-size: 30px
-          color: $color-mi-yellow
+          color: $color-mi-gray
         .icon-mini
           font-size: 32px
           position: absolute
