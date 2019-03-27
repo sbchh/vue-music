@@ -30,6 +30,10 @@
       // 清空输入框
       clearInput () {
         this.query = ''
+      },
+      // 将待传文本放到输入框中(v-model已绑定data和box的数据)
+      setQuery (newQuery) {
+        this.query = newQuery
       }
     }
   }
