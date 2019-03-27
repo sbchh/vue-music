@@ -11,7 +11,8 @@ const state = {
   mode: playMode.sequence,
   // 当前歌曲播放的索引
   currentIndex: -1,
-  disc: {}
+  disc: {},
+  topList: {}
 }
 
 export default state
