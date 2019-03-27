@@ -1,9 +1,9 @@
 <template>
   <div class="search">
     <div class="search-box-wrapper">
-      <search-box ref="searchBox"></search-box>
+      <search-box ref="searchBox" @query="onQueryChange"></search-box>
     </div>
-    <div class="shortcut-wrapper">
+    <div class="shortcut-wrapper" v-show="!query">
       <div class="shortcut">
         <div class="hot-key">
           <h1 class="title">热门搜索</h1>
@@ -15,12 +15,15 @@
         </div>
       </div>
     </div>
-
+    <div class="search-result" v-show="query">
+      <suggest :query="query"></suggest>
+    </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import SearchBox from 'base/search-box/search-box'
+  import Suggest from 'components/suggest/suggest'
   import { getHotKey } from 'api/search'
   import { ERR_OK } from 'api/config'
 
@@ -30,13 +33,19 @@
     },
     data () {
       return {
-        hotKey: []
+        hotKey: [],
+        query: ''
       }
     },
     methods: {
       // 添加热门词到搜索框中
       addQuery (newQuery) {
         this.$refs.searchBox.setQuery(newQuery)
+      },
+      // 当searchBox发生变化时
+      onQueryChange (newQuery) {
+        // 从搜索框里拿到变化值
+        this.query = newQuery
       },
       // 获取热门搜索词
       _getHotKey () {
@@ -48,7 +57,8 @@
       }
     },
     components: {
-      SearchBox
+      SearchBox,
+      Suggest
     }
   }
 
@@ -82,7 +92,7 @@
             border-radius: 6px
             background: $color-highlight-background
             font-size: $font-size-medium
-            color: $color-text-d
+            color: $color-mi-gray
         .search-history
           position: relative
           margin: 0 20px

@@ -37,7 +37,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       ],
     },
 
-    // 利用axios跳过qq服务器 获取歌单数据 42-57 获取歌词数据 59-81 获取歌单详情数据 83-
+    // 利用axios跳过qq服务器
+    // 获取歌单数据 43-58 获取歌词数据 60-82 获取歌单详情数据 84-98 获取搜索到的数据 100-
     before (app) {
       app.get('/api/getDiscList', function (req, res) {
         //这里是正常请求的地址
@@ -66,15 +67,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
           },
           params: req.query
         }).then((response) => {
-          var ret = response.data
-          if (typeof ret === 'string') {
-            var reg = /^\w+\(({[^()]+})\)$/
-            var matches = ret.match(reg)
-            if (matches) {
-              ret = JSON.parse(matches[1])
-            }
-          }
-          res.json(ret)
+          res.json(response.data)
         }).catch((e) => {
           console.log(e)
         })
@@ -95,22 +88,48 @@ const devWebpackConfig = merge(baseWebpackConfig, {
           console.log(err)
         })
       })
+
+      app.get('/api/getSearchRet', function (req, res) {
+        var url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
+
+        axios.get(url, {
+          headers: {
+            referer: 'https://y.qq.com/',
+            host: 'c.y.qq.com'
+          },
+          params: req.query
+        }).then((response) => {
+          res.json(response.data)
+        }).catch((err) => {
+          console.log(err)
+        })
+      })
     },
     hot: true,
-    contentBase: false, // since we use CopyWebpackPlugin.
-    compress: true,
-    host: HOST || config.dev.host,
-    port: PORT || config.dev.port,
-    open: config.dev.autoOpenBrowser,
-    overlay: config.dev.errorOverlay
-      ? {warnings: false, errors: true}
-      : false,
-    publicPath: config.dev.assetsPublicPath,
-    proxy: config.dev.proxyTable,
-    quiet: true, // necessary for FriendlyErrorsPlugin
-    watchOptions: {
-      poll: config.dev.poll,
-    }
+    contentBase:
+      false, // since we use CopyWebpackPlugin.
+    compress:
+      true,
+    host:
+    HOST || config.dev.host,
+    port:
+    PORT || config.dev.port,
+    open:
+    config.dev.autoOpenBrowser,
+    overlay:
+      config.dev.errorOverlay
+        ? {warnings: false, errors: true}
+        : false,
+    publicPath:
+    config.dev.assetsPublicPath,
+    proxy:
+    config.dev.proxyTable,
+    quiet:
+      true, // necessary for FriendlyErrorsPlugin
+    watchOptions:
+      {
+        poll: config.dev.poll,
+      }
   },
   plugins: [
     new webpack.DefinePlugin({

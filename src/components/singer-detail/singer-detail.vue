@@ -40,11 +40,11 @@
         }
         getSingerDetail(this.singer.id).then((res) => {
           if (res.code === ERR_OK) {
-            this.songs = this._nomalizeSongs(res.data.list)
+            this.songs = this._normalizeSongs(res.data.list)
           }
         })
       },
-      _nomalizeSongs (list) {
+      _normalizeSongs (list) {
         let ret = []
         list.forEach((item) => {
           let {musicData} = item
