@@ -37,11 +37,11 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       ],
     },
 
-    // 利用axios跳过qq服务器 获取歌单数据 41-68 获取歌词数据
+    // 利用axios跳过qq服务器 获取歌单数据 42-57 获取歌词数据 59-81 获取歌单详情数据 83-
     before (app) {
       app.get('/api/getDiscList', function (req, res) {
         //这里是正常请求的地址
-        const url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
+        var url = 'https://c.y.qq.com/splcloud/fcgi-bin/fcg_get_diss_by_tag.fcg'
         //通过axios在nodejs中发送HTTP请求时，带上指定的headers以及params
         axios.get(url, {
           headers: {
@@ -67,7 +67,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
           params: req.query
         }).then((response) => {
           var ret = response.data
-          if(typeof ret ==='string'){
+          if (typeof ret === 'string') {
             var reg = /^\w+\(({[^()]+})\)$/
             var matches = ret.match(reg)
             if (matches) {
@@ -77,6 +77,22 @@ const devWebpackConfig = merge(baseWebpackConfig, {
           res.json(ret)
         }).catch((e) => {
           console.log(e)
+        })
+      })
+
+      app.get('/api/getCdList', function (req, res) {
+        var url = 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg'
+
+        axios.get(url, {
+          headers: {
+            referer: 'https://y.qq.com/',
+            host: 'c.y.qq.com'
+          },
+          params: req.query
+        }).then((response) => {
+          res.json(response.data)
+        }).catch((err) => {
+          console.log(err)
         })
       })
     },
