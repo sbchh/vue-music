@@ -114,7 +114,7 @@
         this._scrollTo(anchorIndex)
       },
 
-      // 刷新
+      // 刷新布局事件 用于mini播放器在底部时 多出一块空间
       refresh () {
         this.$refs.listview.refresh()
       },

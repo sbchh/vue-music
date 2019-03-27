@@ -32,12 +32,15 @@
   import Loading from 'base/loading/loading'
   import { prefixStyle } from 'common/js/dom'
   import { mapActions } from 'vuex'
+  import { playlistMixin } from 'common/js/mixin'
 
   const RESERVED_HEIGHT = 40
   const transform = prefixStyle('transform')
   const backdrop = prefixStyle('backdrop-filter')
 
   export default {
+    // 插入mixin组件
+    mixins: [playlistMixin],
     // 接受数据
     props: {
       bgImage: {
@@ -75,6 +78,12 @@
       this.$refs.list.$el.style.top = `${this.imageHeight}px`
     },
     methods: {
+      // 重写playList方法 使页面布局底部有空间放mini播放器
+      handlePlaylist (playlist) {
+        const bottom = playlist.length > 0 ? '60px' : ''
+        this.$refs.list.$el.style.bottom = bottom
+        this.$refs.list.refresh()
+      },
       scroll (pos) {
         this.scrollY = pos.y
       },

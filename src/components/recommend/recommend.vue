@@ -1,5 +1,5 @@
 <template>
-  <div class="recommend">
+  <div class="recommend" ref="recommend">
     <scroll ref="scroll" class="recommend-content" :data="discList">
       <div>
         <div v-if="recommends.length" class="slider-wrapper">
@@ -39,8 +39,11 @@
   import Slider from 'base/slider/slider'
   import { getRecommend, getDiscList } from 'api/recommend'
   import { ERR_OK } from 'api/config'
+  import { playlistMixin } from 'common/js/mixin'
 
   export default {
+    // 传入mixin组件
+    mixins: [playlistMixin],
     data () {
       return {
         recommends: [],
@@ -52,6 +55,12 @@
       this._getDiscList()
     },
     methods: {
+      // 重写playList方法 使页面布局底部有空间放mini播放器
+      handlePlaylist (playlist) {
+        const bottom = playlist.length > 0 ? '60px' : ''
+        this.$refs.recommend.style.bottom = bottom
+        this.$refs.scroll.refresh()
+      },
       // 获取轮播图数据
       _getRecommend () {
         getRecommend().then((res) => {

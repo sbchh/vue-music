@@ -1,6 +1,6 @@
 <template>
-  <div class="singer">
-    <list-view @select="selectSinger" :data="singers"></list-view>
+  <div class="singer" ref="singer">
+    <list-view @select="selectSinger" :data="singers" ref="list"></list-view>
     <router-view></router-view>
   </div>
 </template>
@@ -11,11 +11,14 @@
   import Singer from 'common/js/singer'
   import ListView from 'base/listview/listview'
   import { mapMutations } from 'vuex'
+  import { playlistMixin } from 'common/js/mixin'
 
   const HOT_NAME = '热门'
   const HOT_SINGER_LEN = 10
 
   export default {
+    // 传入mixin组件
+    mixins: [playlistMixin],
     data () {
       return {
         singers: []
@@ -27,6 +30,12 @@
     },
 
     methods: {
+      // 重写playList方法 使页面布局底部有空间放mini播放器
+      handlePlaylist (playlist) {
+        const bottom = playlist.length > 0 ? '60px' : ''
+        this.$refs.singer.style.bottom = bottom
+        this.$refs.list.refresh()
+      },
       selectSinger (singer) {
         this.$router.push({
           path: `/singer/${singer.id}`
@@ -34,10 +43,10 @@
         // 实现对mutation的提交
         this.setSinger(singer)
       },
-    // 扩展运算符来对象映射 setSinger->singer
-    ...mapMutations({
-      setSinger: 'SET_SINGER'
-    }),
+      // 扩展运算符来对象映射 setSinger->singer
+      ...mapMutations({
+        setSinger: 'SET_SINGER'
+      }),
       _getSingerList () {
         getSingerList().then((res) => {
           if (res.code === ERR_OK) {
