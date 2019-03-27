@@ -57,7 +57,7 @@
       this._getDiscList()
     },
     methods: {
-      // 重写playList方法 使页面布局底部有空间放mini播放器
+      // 与mixins配套 重写playList方法 使页面布局底部有空间放mini播放器
       handlePlaylist (playlist) {
         const bottom = playlist.length > 0 ? '60px' : ''
         this.$refs.recommend.style.bottom = bottom
