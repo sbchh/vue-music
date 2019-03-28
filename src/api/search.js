@@ -15,13 +15,15 @@ export function getHotKey () {
 }
 
 // 获取搜索结果
-export function getSearchRet (keyword, page, zhida) {
+export function getSearchRet (keyword, page, zhida, perpage) {
   const url = '/api/getSearchRet'
 
   const data = Object.assign({}, commonParams, {
     platform: 'h5',
     w: keyword,
     p: page,
+    perpage,
+    n: perpage,
     catZhida: zhida ? 1 : 0,
     zhidaqu: 1,
     needNewCode: 1,
@@ -30,8 +32,6 @@ export function getSearchRet (keyword, page, zhida) {
     ie: 'utf-8',
     sem: 1,
     aggr: 0,
-    perpage: 20,
-    n: 20,
     remoteplace: 'txt.mqq.all',
     format: 'json'
   })

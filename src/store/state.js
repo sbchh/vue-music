@@ -6,7 +6,9 @@ const state = {
   playing: false,
   // 全屏播放页
   fullScreen: false,
+  // 当前已有的播放列表
   playlist: [],
+  // 顺序当前播放列表
   sequenceList: [],
   mode: playMode.sequence,
   // 当前歌曲播放的索引

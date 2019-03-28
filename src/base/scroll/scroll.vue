@@ -28,6 +28,12 @@
         type: Boolean,
         default: false
       },
+      // 上拉刷新
+      pullup: {
+        type: Boolean,
+        default: false
+      },
+      // 刷新演示200ms
       refreshDelay: {
         type: Number,
         default: 20
@@ -37,7 +43,7 @@
     mounted () {
       setTimeout(() => {
         this._initScroll()
-      }, 20)
+      }, this.refreshDelay)
     },
 
     methods: {
@@ -55,6 +61,15 @@
           let me = this
           this.scroll.on('scroll', (pos) => {
             me.$emit('scroll', pos)
+          })
+        }
+        if (this.pullup) {
+          // 监听滑动结束事件
+          this.scroll.on('scrollEnd', () => {
+            // 如果滚动到底部 派发滚动到底部事件
+            if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
+              this.$emit('scrollToEnd')
+            }
           })
         }
       },
