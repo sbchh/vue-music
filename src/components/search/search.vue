@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="search-result" v-show="query">
-      <suggest :query="query" @listScroll="blurInput"></suggest>
+      <suggest @select="saveSearch" :query="query" @listScroll="blurInput"></suggest>
     </div>
     <router-view></router-view>
   </div>
@@ -27,6 +27,7 @@
   import Suggest from 'components/suggest/suggest'
   import { getHotKey } from 'api/search'
   import { ERR_OK } from 'api/config'
+  import { mapActions } from 'vuex'
 
   export default {
     created () {
@@ -52,6 +53,10 @@
       blurInput () {
         this.$refs.searchBox.blur()
       },
+      // 保存搜索历史
+      saveSearch () {
+        this.saveSearchHistory(this.query)
+      },
       // 获取热门搜索词
       _getHotKey () {
         getHotKey().then((res) => {
@@ -59,7 +64,11 @@
             this.hotKey = res.data.hotkey.slice(0, 10)
           }
         })
-      }
+      },
+      // 将actions.js方法映射到search.vue
+      ...mapActions([
+        'saveSearchHistory'
+      ])
     },
     components: {
       SearchBox,

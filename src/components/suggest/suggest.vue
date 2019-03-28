@@ -122,6 +122,8 @@
         } else {
           this.insertSong(item)
         }
+        // 派发点击item事件
+        this.$emit('select')
       },
       // 传入数据到state修改相应属性
       ...mapMutations({

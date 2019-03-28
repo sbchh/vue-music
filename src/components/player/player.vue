@@ -83,7 +83,7 @@
         </div>
         <div class="control">
           <progress-circle :radius="radius" :percent="percent">
-            <i @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
+            <i @click.stop.prevent="togglePlaying" class="icon-mini" :class="miniIcon"></i>
           </progress-circle>
         </div>
         <div class="control">
@@ -91,7 +91,7 @@
         </div>
       </div>
     </transition>
-    <audio ref="audio" @canplay="Songready" @error="Songerror" @timeupdate="updateTime" @ended="Songend"
+    <audio ref="audio" @play="Songready" @error="Songerror" @timeupdate="updateTime" @ended="Songend"
            :src="currentSong.url"></audio>
   </div>
 </template>
@@ -180,16 +180,16 @@
             transform: `translate3d(${x}px,${y}px,0) scale(${scale})`
           },
           60: {
-            transform: `translate3d(0,0,0) scale(${1.1})`
+            transform: `translate3d(0,0,0) scale(1.1)`
           },
           100: {
-            transform: `translate3d(0,0,0) scale(${1})`
+            transform: `translate3d(0,0,0) scale(1)`
           }
         }
         animations.registerAnimation({
           name: 'move',
           animation,
-          present: {
+          presets: {
             duration: 400,
             easing: 'linear'
           }
@@ -246,6 +246,7 @@
         // 如果列表只有一首歌
         if (this.playlist.length === 1) {
           this.loopSong()
+          return
         } else {
           let index = this.currentIndex - 1
           if (index === -1) {
@@ -266,6 +267,7 @@
         // 如果列表只有一首歌
         if (this.playlist.length === 1) {
           this.loopSong()
+          return
         } else {
           let index = this.currentIndex + 1
           if (index === this.playlist.length) {
@@ -283,6 +285,7 @@
         // 将当前进度条重置为0
         this.$refs.audio.currentTime = 0
         this.$refs.audio.play()
+        this.setPlayingState(true)
         if (this.currentLyric) {
           // 重置歌词到最初
           this.currentLyric.seek(0)
@@ -315,6 +318,9 @@
       // 获取歌词并解析 (排除没有歌词的情况)
       _getLyric () {
         this.currentSong.getLyric().then((lyric) => {
+          if (this.currentSong.lyric !== lyric) {
+            return
+          }
           this.currentLyric = new Lyric(lyric, this.handleLyric)
           // 歌曲正在播放
           if (this.playing) {
@@ -367,7 +373,7 @@
         this.$refs.middleL.style.opacity = 1 - this.touch.percent
         this.$refs.middleL.style[transitionDuration] = 0
       },
-      // 滑动事件
+      // 点击事件结束
       middleTouchEnd () {
         let offsetWidth = 0
         let offsetOpacity = 0
@@ -397,6 +403,7 @@
         this.$refs.lyricList.$el.style[transitionDuration] = `${time}ms`
         this.$refs.middleL.style.opacity = offsetOpacity
         this.$refs.middleL.style[transitionDuration] = `${time}ms`
+        this.touch.initiated = false
       },
       // 播放时 进度条补0
       _pad (num, n = 2) {
@@ -454,6 +461,9 @@
     },
     watch: {
       currentSong (newSong, oldSong) {
+        if (!newSong.id) {
+          return
+        }
         if (newSong.id === oldSong.id) {
           return
         }
@@ -461,17 +471,22 @@
         // 在切歌之前 先把当前的歌词滚动给关掉
         if (this.currentLyric) {
           this.currentLyric.stop()
+          this.currentTime = 0
+          this.playingLyric = ''
+          this.currentLineNum = 0
         }
         // 保证从后台切换到前台 歌曲可以重新播放
-        setTimeout(() => {
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
           this.$refs.audio.play()
           // 获取歌词
           this._getLyric()
-        }, 1000)
+        }, 300)
       },
       // 观察歌曲播放状态
       playing (newPlaying) {
         const audio = this.$refs.audio
+
         this.$nextTick(() => {
           newPlaying ? audio.play() : audio.pause()
         })
@@ -643,7 +658,7 @@
             flex: 1
             color: $color-theme
             &.disable
-              color: $color-theme-d
+              color: $color-theme-cd
             i
               font-size: 30px
           .i-left

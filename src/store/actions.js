@@ -4,6 +4,7 @@
 import * as types from './mutation-types'
 import { playMode } from '../common/js/config'
 import { shuffle } from '../common/js/util'
+import { saveSearch } from 'common/js/catch'
 
 // 选择歌曲播放
 export const selectPlay = function ({commit, state}, {list, index}) {
@@ -20,6 +21,13 @@ export const selectPlay = function ({commit, state}, {list, index}) {
   commit(types.SET_CURRENT_INDEX, index)
   commit(types.SET_FULL_SCREEN, true)
   commit(types.SET_PLAYING_STATE, true)
+}
+
+// 把顺序列表中某一首歌的下标对应到随机列表的下标
+function findIndex (list, song) {
+  return list.findIndex((item) => {
+    return item.id === song.id
+  })
 }
 
 // 随机播放全部
@@ -80,9 +88,7 @@ export const insertSong = function ({commit, state}, song) {
   commit(types.SET_PLAYING_STATE, true)
 }
 
-// 把顺序列表中某一首歌的下标对应到随机列表的下标
-function findIndex (list, song) {
-  return list.findIndex((item) => {
-    return item.id === song.id
-  })
+// 保存搜索历史记录到本地
+export const saveSearchHistory = function ({commit}, query) {
+  commit(types.SET_SEARCH_HISTORY, saveSearch(query))
 }
