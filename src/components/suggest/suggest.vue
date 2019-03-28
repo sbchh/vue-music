@@ -1,5 +1,6 @@
 <template>
-  <scroll class="suggest" :data="result" :pullup="pullup" @scrollToEnd="SearchMore" ref="suggest">
+  <scroll class="suggest" :data="result" :pullup="pullup" @scrollToEnd="SearchMore" @beforeScroll="listScroll"
+          ref="suggest">
     <ul class="suggest-list">
       <li class="suggest-item" v-for="(item,index) in result" :key="index" @click="selectItem(item)">
         <div class="icon">
@@ -11,6 +12,9 @@
       </li>
       <loading v-show="hasMore" title=""></loading>
     </ul>
+    <div class="no-result-wrapper" v-show="!hasMore && !result.length">
+      <no-result title="暂无搜索结果"></no-result>
+    </div>
   </scroll>
 </template>
 
@@ -22,7 +26,8 @@
   import Loading from 'base/loading/loading'
   import Singer from 'common/js/singer'
   import { mapMutations, mapActions } from 'vuex'
-//  import {playlistMixin} from 'common/js/mixin'
+  import NoResult from 'base/no-result/no-result'
+  //  import {playlistMixin} from 'common/js/mixin'
 
   const TYPE_SINGER = 'singer'
   const perpage = 20
@@ -50,7 +55,9 @@
         // 需要上拉刷新
         pullup: true,
         // 标志位-有更多的数据可供上拉
-        hasMore: true
+        hasMore: true,
+        // 滑动前判断input框是否激活
+        beforeScroll: true
       }
     },
     methods: {
@@ -81,6 +88,10 @@
           }
         })
       },
+      // 派发滚动前检测事件给search.vue
+      listScroll () {
+        this.$emit('listScroll')
+      },
       // 根据歌手/歌曲 选择样式
       getIconCls (item) {
         if (item.type === TYPE_SINGER) {
@@ -98,18 +109,18 @@
         }
       },
       // 根据歌手/歌曲 跳转到不同的页面 item为歌曲列表
-      selectItem (songList) {
-        if (songList.type === TYPE_SINGER) {
+      selectItem (item) {
+        if (item.type === TYPE_SINGER) {
           const singer = new Singer({
-            id: songList.singermid,
-            name: songList.singername
+            id: item.singermid,
+            name: item.singername
           })
           this.$router.push({
             path: `/search/${singer.id}`
           })
           this.setSinger(singer)
         } else {
-          this.insertSong(songList)
+          this.insertSong(item)
         }
       },
       // 传入数据到state修改相应属性
@@ -157,7 +168,8 @@
     },
     components: {
       Scroll,
-      Loading
+      Loading,
+      NoResult
     }
   }
 </script>

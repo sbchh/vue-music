@@ -1,12 +1,14 @@
 <template>
   <div class="search-box">
     <i class="icon-search"></i>
-    <input class="box" v-model="query" :placeholder="placeholder"/>
+    <input ref="query" class="box" v-model="query" :placeholder="placeholder"/>
     <i @click="clearInput" v-show="query" class="icon-dismiss"></i>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+  import { debounce } from 'common/js/util'
+
   export default {
     props: {
       placeholder: {
@@ -22,9 +24,10 @@
     },
     created () {
       // 将输入框的内容暴露出去 便于调用
-      this.$watch('query', (newQuery) => {
+      // 延时执行 节省流量
+      this.$watch('query', debounce((newQuery) => {
         this.$emit('query', newQuery)
-      })
+      }, 200))
     },
     methods: {
       // 清空输入框
@@ -34,6 +37,10 @@
       // 将待传文本放到输入框中(v-model已绑定data和box的数据)
       setQuery (newQuery) {
         this.query = newQuery
+      },
+      // 解除box的输入状态(添加对外的方法)
+      blur () {
+        this.$refs.query.blur()
       }
     }
   }

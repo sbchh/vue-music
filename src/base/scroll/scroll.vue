@@ -33,6 +33,11 @@
         type: Boolean,
         default: false
       },
+      // 是否检测滑动前的事件
+      beforeScroll: {
+        type: Boolean,
+        default: false
+      },
       // 刷新演示200ms
       refreshDelay: {
         type: Number,
@@ -70,6 +75,11 @@
             if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
               this.$emit('scrollToEnd')
             }
+          })
+        }
+        if (this.beforeScroll) {
+          this.scroll.on('beforeScrollStart', () => {
+            this.$emit('beforeScroll')
           })
         }
       },
