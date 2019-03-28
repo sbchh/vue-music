@@ -7,7 +7,7 @@ const SEARCH_MAX_LENGTH = 15
 // 收藏列表
 // 歌单列表
 
-// 搜索结果列表
+// 保存搜索结果列表
 export function saveSearch (query) {
   // 搜索列表数组 最多有15条数据
   // 如果有重复的数据则替换到最新的搜索结果中
@@ -42,4 +42,29 @@ function insertArray (arr, val, compare, maxLen) {
 // 从本地缓存读取searchList
 export function loadSearch () {
   return storage.get(SEARCH_KEY, [])
+}
+
+// 删除一条搜索结果
+export function deleteSearch (query) {
+  let searches = storage.get(SEARCH_KEY, [])
+  deleteFromArray(searches, (item) => {
+    return item === query
+  })
+  storage.set(SEARCH_KEY, searches)
+  return searches
+}
+
+// 从数组中删除元素
+function deleteFromArray (arr, compare) {
+  let index = arr.findIndex(compare)
+  // 如果元素存在 删除一个元素
+  if (index > -1) {
+    arr.splice(index, 1)
+  }
+}
+
+// 清空搜索结果
+export function clearSearch () {
+  storage.remove(SEARCH_KEY)
+  return []
 }

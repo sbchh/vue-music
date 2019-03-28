@@ -125,6 +125,10 @@
         // 派发点击item事件
         this.$emit('select')
       },
+      // 代理scroll方法 派发事件
+      refresh () {
+        this.$refs.suggest.refresh()
+      },
       // 传入数据到state修改相应属性
       ...mapMutations({
         setSinger: 'SET_SINGER'
