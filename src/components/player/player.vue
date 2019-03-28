@@ -86,12 +86,12 @@
             <i @click.stop.prevent="togglePlaying" class="icon-mini" :class="miniIcon"></i>
           </progress-circle>
         </div>
-        <div class="control">
+        <div class="control" @click.stop="showPlaylist">
           <i class="icon-playlist"></i>
         </div>
       </div>
     </transition>
-    <playlist></playlist>
+    <playlist ref="playlist"></playlist>
     <audio ref="audio" @play="Songready" @error="Songerror" @timeupdate="updateTime" @ended="Songend"
            :src="currentSong.url"></audio>
   </div>
@@ -346,6 +346,10 @@
           this.$refs.lyricList.scrollTo(0, 0, 1000)
         }
         this.playingLyric = txt
+      },
+      // 展示播放列表
+      showPlaylist () {
+        this.$refs.playlist.show()
       },
       // 点击事件
       middleTouchStart (e) {

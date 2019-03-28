@@ -1,7 +1,7 @@
 <template>
   <transition name="list-fade">
-    <div class="playlist">
-      <div class="list-wrapper">
+    <div class="playlist" v-show="showFlag" @click="hide">
+      <div class="list-wrapper" @click.stop>
         <div class="list-header">
           <h1 class="title">
             <i class="icon"></i>
@@ -29,7 +29,7 @@
             <span class="text">添加到播放队列</span>
           </div>
         </div>
-        <div class="list-close">
+        <div class="list-close" @click="hide">
           <span>关闭</span>
         </div>
       </div>
@@ -38,7 +38,24 @@
 </template>
 
 <script type="text/ecmascript-6">
-  export default {}
+  export default {
+    data () {
+      return {
+        // 显示标志
+        showFlag: false
+      }
+    },
+    methods: {
+      // 显示播放列表
+      show () {
+        this.showFlag = true
+      },
+      // 隐藏播放列表
+      hide () {
+        this.showFlag = false
+      }
+    }
+  }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
