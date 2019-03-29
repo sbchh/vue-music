@@ -8,12 +8,12 @@
         </div>
       </div>
       <div class="shortcut-wrapper">
-        <search-box placeholder="搜索歌曲" @query="onQueryChange"></search-box>
+        <search-box ref="searchBox" placeholder="搜索歌曲" @query="onQueryChange"></search-box>
       </div>
       <div class="shortcut" v-show="!query"></div>
       <div class="search-result" v-show="query">
-        <suggest :query="query" :showSinger="showSinger" :listScroll="listScroll" @select="selectSuggest"
-                 @listScroll="bulrInput"></suggest>
+        <suggest :query="query" :showSinger="showSinger" @select="selectSuggest"
+                 @listScroll="blurInput"></suggest>
       </div>
     </div>
   </transition>
@@ -31,8 +31,7 @@
         // 显示标志
         showFlag: false,
         // 不显示歌手
-        showSinger: false,
-        listScroll: true
+        showSinger: false
       }
     },
     methods: {
@@ -49,7 +48,7 @@
         this.saveSearch()
       },
       // 上滑取消输入状态
-      bulrInput () {
+      blurInputAdd () {
         this.blurInput()
       }
     },

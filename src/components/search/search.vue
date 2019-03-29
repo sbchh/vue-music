@@ -42,47 +42,26 @@
   import Scroll from 'base/scroll/scroll'
   import { getHotKey } from 'api/search'
   import { ERR_OK } from 'api/config'
-  import { mapActions, mapGetters } from 'vuex'
-  import { playlistMixin } from 'common/js/mixin'
+  import { mapActions } from 'vuex'
+  import { playlistMixin, searchMixin } from 'common/js/mixin'
 
   export default {
-    mixins: [playlistMixin],
+    mixins: [playlistMixin, searchMixin],
     created () {
       this._getHotKey()
     },
     data () {
       return {
-        hotKey: [],
-        query: ''
+        hotKey: []
       }
     },
     computed: {
       // 把热词和搜索记录统一成一条记录 触发滚动组件生效
       shortcute () {
         return this.hotKey.concat(this.searchHistory)
-      },
-      ...mapGetters([
-        'searchHistory'
-      ])
+      }
     },
     methods: {
-      // 添加热门词到搜索框中
-      addQuery (newQuery) {
-        this.$refs.searchBox.setQuery(newQuery)
-      },
-      // 当searchBox发生变化时
-      onQueryChange (newQuery) {
-        // 从搜索框里拿到变化值
-        this.query = newQuery
-      },
-      // 清除输入框状态 滑动无输入法遮挡
-      blurInput () {
-        this.$refs.searchBox.blur()
-      },
-      // 保存搜索历史
-      saveSearch () {
-        this.saveSearchHistory(this.query)
-      },
       // 显示确认提示框
       showComfirm () {
         this.$refs.comfirm.show()
@@ -109,8 +88,6 @@
       },
       // 将actions.js方法映射到search.vue
       ...mapActions([
-        'saveSearchHistory',
-        'deleteSearchHistory',
         'clearSearchHistory'
       ])
     },

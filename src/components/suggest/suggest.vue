@@ -122,7 +122,7 @@
           this.insertSong(item)
         }
         // 派发点击item事件
-        this.$emit('select')
+        this.$emit('select', item)
       },
       // 代理scroll方法 派发事件
       refresh () {
@@ -167,8 +167,8 @@
     },
     watch: {
       // 搜索词变化时 进行查询操作
-      query () {
-        this.searchQuery()
+      query (newQuery) {
+        this.searchQuery(newQuery)
       }
     },
     components: {

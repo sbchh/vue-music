@@ -1,6 +1,6 @@
 // 通用组件接口 只定义方法 不定义具体操作 方便复用组件
 
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 import { playMode } from 'common/js/config'
 import { shuffle } from 'common/js/util'
 
@@ -77,5 +77,42 @@ export const playerMixin = {
       setPlayMode: 'SET_PLAY_MODE',
       setPlaylist: 'SET_PLAYLIST'
     })
+  }
+}
+
+export const searchMixin = {
+  data () {
+    return {
+      // 待搜索字段
+      query: ''
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'searchHistory'
+    ])
+  },
+  methods: {
+    // 添加热门词到搜索框中
+    addQuery (newQuery) {
+      this.$refs.searchBox.setQuery(newQuery)
+    },
+    // 当searchBox发生变化时
+    onQueryChange (newQuery) {
+      // 从搜索框里拿到变化值
+      this.query = newQuery
+    },
+    // 清除输入框状态 滑动无输入法遮挡
+    blurInput () {
+      this.$refs.searchBox.blur()
+    },
+    // 保存搜索历史
+    saveSearch () {
+      this.saveSearchHistory(this.query)
+    },
+    ...mapActions([
+      'saveSearchHistory',
+      'deleteSearchHistory'
+    ])
   }
 }

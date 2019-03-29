@@ -27,7 +27,7 @@
           </transition-group>
         </scroll>
         <div class="list-operate">
-          <div class="add">
+          <div class="add" @click="showAddSong">
             <i class="icon-add"></i>
             <span class="text">添加到播放队列</span>
           </div>
@@ -36,7 +36,8 @@
           <span>关闭</span>
         </div>
       </div>
-      <comfirm ref="comfirm" @comfirm="deleteSongList" text="是否清空播放列表" comfirmBtnText="清空"></comfirm>
+      <comfirm ref="comfirm" @comfirm="comfirmClear" text="是否清空播放列表" comfirmBtnText="清空"></comfirm>
+      <add-song ref="addSong"></add-song>
     </div>
   </transition>
 </template>
@@ -47,6 +48,7 @@
   import Scroll from 'base/scroll/scroll'
   import Comfirm from 'base/comfirm/comfirm'
   import { playerMixin } from 'common/js/mixin'
+  import AddSong from 'components/add-song/add-song'
 
   export default {
     mixins: [playerMixin],
@@ -110,9 +112,18 @@
           this.hide()
         }
       },
-      // 清空播放列表提示框
+      // 显示清空播放列表提示框
       showComfirm () {
         this.$refs.comfirm.show()
+      },
+      // 确认清空播放列表
+      comfirmClear () {
+        this.deleteSongList()
+        this.hide()
+      },
+      // 显示添加到列表控件
+      showAddSong () {
+        this.$refs.addSong.show()
       },
       ...mapActions([
         'deleteSong',
@@ -130,7 +141,8 @@
     },
     components: {
       Scroll,
-      Comfirm
+      Comfirm,
+      AddSong
     }
   }
 </script>
