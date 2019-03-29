@@ -14,7 +14,7 @@
       <div class="filter" ref="filter"></div>
     </div>
     <div class="bg-layer" ref="layer"></div>
-    <scroll @scroll="scroll" :probe-type="probeType" :listen-scroll="listenScroll" class="list" :data="songs"
+    <scroll class="list" @scroll="scroll" :probe-type="probeType" :data="songs"
             ref="list">
       <div class="song-list-wrapper">
         <song-list :rank="rank" @select="selectItem" :songs="songs"></song-list>

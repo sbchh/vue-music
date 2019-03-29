@@ -84,7 +84,8 @@ export const searchMixin = {
   data () {
     return {
       // 待搜索字段
-      query: ''
+      query: '',
+      refreshDelay: 100
     }
   },
   computed: {

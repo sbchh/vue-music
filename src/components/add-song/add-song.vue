@@ -13,12 +13,14 @@
       <div class="shortcut" v-show="!query">
         <switches :switches="switches" :currentIndex="currentIndex" @switch="switchItem"></switches>
         <div class="list-wrapper">
-          <scroll class="list-scroll" v-if="currentIndex===0" :data="playHistory" ref="songList">
+          <scroll class="list-scroll" v-if="currentIndex===0" :data="playHistory" ref="songList"
+                  :refreshDelay="refreshDelay">
             <div class="list-inner">
               <song-list :songs="playHistory" @select="selectSong"></song-list>
             </div>
           </scroll>
-          <scroll class="list-scroll" v-if="currentIndex===1" :data="searchHistory" ref="searchList">
+          <scroll class="list-scroll" v-if="currentIndex===1" :data="searchHistory" ref="searchList"
+                  :refreshDelay="refreshDelay">
             <div class="list-inner">
               <search-list :searches="searchHistory" @delete="deleteSearchHistory" @select="addQuery"></search-list>
             </div>
@@ -29,6 +31,12 @@
         <suggest :query="query" :showSinger="showSinger" @select="selectSuggest"
                  @listScroll="blurInput"></suggest>
       </div>
+      <top-tip ref="topTip">
+        <div class="tip-title">
+          <i class="icon-ok"></i>
+          <span class="text">已添加到播放队列</span>
+        </div>
+      </top-tip>
     </div>
   </transition>
 </template>
@@ -43,6 +51,7 @@
   import SongList from 'base/song-list/song-list'
   import Song from 'common/js/song'
   import SearchList from 'base/search-list/search-list'
+  import TopTip from 'base/top-tip/top-tip'
 
   export default {
     mixins: [searchMixin],
@@ -86,6 +95,7 @@
       // 保存搜索结果
       selectSuggest () {
         this.saveSearch()
+        this.showTip()
       },
       // 上滑取消输入状态
       blurInputAdd () {
@@ -99,7 +109,12 @@
       selectSong (song, index) {
         if (index !== 0) {
           this.insertSong(new Song(song))
+          this.showTip()
         }
+      },
+      // 显示顶部标签 两秒后隐藏
+      showTip () {
+        this.$refs.topTip.show()
       },
       ...mapActions([
         'insertSong'
@@ -111,7 +126,8 @@
       Switches,
       Scroll,
       SongList,
-      SearchList
+      SearchList,
+      TopTip
     }
   }
 </script>

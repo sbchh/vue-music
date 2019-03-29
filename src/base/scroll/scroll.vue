@@ -46,6 +46,7 @@
     },
 
     mounted () {
+      // 确保界面数据完整展开后才可滚动
       setTimeout(() => {
         this._initScroll()
       }, this.refreshDelay)

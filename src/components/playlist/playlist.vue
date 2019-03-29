@@ -11,7 +11,7 @@
             </span>
           </h1>
         </div>
-        <scroll class="list-content" :data="sequenceList" ref="listContent">
+        <scroll class="list-content" :data="sequenceList" ref="listContent" :refreshDelay="refreshDelay">
           <transition-group name="list" tag="ul">
             <li class="item" v-for="(item,index) in sequenceList" :key="item.id" @click="selectItem(item,index)"
                 ref="listItem">
@@ -55,7 +55,9 @@
     data () {
       return {
         // 显示标志
-        showFlag: false
+        showFlag: false,
+        // 重新设置刷新时间为100ms 保证动画加载完成后显示数据
+        refreshDelay: 100
       }
     },
     computed: {
