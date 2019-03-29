@@ -1,6 +1,6 @@
 // 状态管理 只保留最基础的数据
 import { playMode } from 'common/js/config'
-import { loadSearch } from 'common/js/catch'
+import { loadSearch, loadPlay } from 'common/js/catch'
 
 const state = {
   singer: {},
@@ -14,10 +14,14 @@ const state = {
   mode: playMode.sequence,
   // 当前歌曲播放的索引
   currentIndex: -1,
+  // 推荐歌单详情页
   disc: {},
+  // 排行榜详情页
   topList: {},
   // 搜索历史
-  searchHistory: loadSearch()
+  searchHistory: loadSearch(),
+  // 播放历史
+  playHistory: loadPlay()
 }
 
 export default state

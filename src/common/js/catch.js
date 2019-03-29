@@ -2,7 +2,9 @@
 import storage from 'good-storage'
 
 const SEARCH_KEY = '__search__'
+const PALY_KEY = '__play__'
 const SEARCH_MAX_LENGTH = 15
+const PLAY_MAX_LENGTH = 200
 
 // 收藏列表
 // 歌单列表
@@ -67,4 +69,19 @@ function deleteFromArray (arr, compare) {
 export function clearSearch () {
   storage.remove(SEARCH_KEY)
   return []
+}
+
+// 保存播放历史 与saveSearch一样
+export function savePlay (song) {
+  let songs = storage.get(PALY_KEY, [])
+  insertArray(songs, song, (item) => {
+    return item.id === song.id
+  }, PLAY_MAX_LENGTH)
+  storage.set(PALY_KEY, songs)
+  return songs
+}
+
+// 从本地缓存读取播放历史
+export function loadPlay () {
+  return storage.get(PALY_KEY, [])
 }

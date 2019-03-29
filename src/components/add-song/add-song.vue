@@ -10,7 +10,16 @@
       <div class="shortcut-wrapper">
         <search-box ref="searchBox" placeholder="搜索歌曲" @query="onQueryChange"></search-box>
       </div>
-      <div class="shortcut" v-show="!query"></div>
+      <div class="shortcut" v-show="!query">
+        <switches :switches="switches" :currentIndex="currentIndex" @switch="switchItem"></switches>
+        <div class="list-wrapper">
+          <scroll class="list-scroll" v-if="currentIndex===0" :data="playHistory">
+            <div class="list-inner">
+              <song-list :songs="playHistory" @select="selectSong"></song-list>
+            </div>
+          </scroll>
+        </div>
+      </div>
       <div class="search-result" v-show="query">
         <suggest :query="query" :showSinger="showSinger" @select="selectSuggest"
                  @listScroll="blurInput"></suggest>
@@ -23,6 +32,11 @@
   import SearchBox from 'base/search-box/search-box'
   import Suggest from 'components/suggest/suggest'
   import { searchMixin } from 'common/js/mixin'
+  import Switches from 'base/switches/switches'
+  import Scroll from 'base/scroll/scroll'
+  import { mapGetters, mapActions } from 'vuex'
+  import SongList from 'base/song-list/song-list'
+  import Song from 'common/js/song'
 
   export default {
     mixins: [searchMixin],
@@ -31,8 +45,20 @@
         // 显示标志
         showFlag: false,
         // 不显示歌手
-        showSinger: false
+        showSinger: false,
+        // 当前歌曲下标
+        currentIndex: 0,
+        // 顶部标签文字
+        switches: [
+          {name: '最近播放'},
+          {name: '搜索历史'}
+        ]
       }
+    },
+    computed: {
+      ...mapGetters([
+        'playHistory'
+      ])
     },
     methods: {
       // 派发显示添加到列表事件
@@ -50,11 +76,27 @@
       // 上滑取消输入状态
       blurInputAdd () {
         this.blurInput()
-      }
+      },
+      // 设置标签点击事件
+      switchItem (index) {
+        this.currentIndex = index
+      },
+      // 点击最近播放中的歌曲 插入到播放列表中
+      selectSong (song, index) {
+        if (index !== 0) {
+          this.insertSong(new Song(song))
+        }
+      },
+      ...mapActions([
+        'insertSong'
+      ])
     },
     components: {
       SearchBox,
-      Suggest
+      Suggest,
+      Switches,
+      Scroll,
+      SongList
     }
   }
 </script>
@@ -95,9 +137,10 @@
     .search-box-wrapper
       margin: 20px
     .shortcut
+      margin-top: 5px
       .list-wrapper
         position: absolute
-        top: 165px
+        top: 170px
         bottom: 0
         width: 100%
         .list-scroll
