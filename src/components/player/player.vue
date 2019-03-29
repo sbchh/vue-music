@@ -103,18 +103,17 @@
   import { prefixStyle } from 'common/js/dom'
   import ProgressBar from 'base/progress-bar/progress-bar'
   import ProgressCircle from 'base/progress-circle/progress-circle'
-  import { shuffle } from 'common/js/util'
   import Lyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
   import Playlist from 'components/playlist/playlist'
   import { playMode } from 'common/js/config'
-//  import { playerMixin } from 'common/js/mixin'
+  import { playerMixin } from 'common/js/mixin'
 
   const transform = prefixStyle('transform')
   const transitionDuration = prefixStyle('transitionDuration')
 
   export default {
-//    mixins: [playerMixin],
+    mixins: [playerMixin],
     data () {
       return {
         // 当前歌曲是否准备播放
@@ -141,9 +140,6 @@
       miniIcon () {
         return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
       },
-     iconMode () {
-       return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
-     },
       // 旋转的CD样式
       cdCls () {
         return this.playing ? 'play' : 'play pause'
@@ -158,12 +154,8 @@
       // 通过播放列表是否存在来控制播放器的显示与否
       ...mapGetters([
         'fullScreen',
-        'playlist',
-        'currentSong',
         'playing',
-        'currentIndex',
-        'mode',
-        'sequenceList'
+        'currentIndex'
       ])
     },
     created () {
@@ -434,37 +426,8 @@
           this.currentLyric.seek(currentSongTime * 1000)
         }
       },
-      // 改变播放模式
-      changeMode () {
-        const mode = (this.mode + 1) % 3
-        // 更改播放模式图标
-        this.setPlayMode(mode)
-        // 初始化播放器列表
-        let list = null
-        // 如果是随机播放 将列表变成随机列表
-        if (mode === playMode.random) {
-          list = shuffle(this.sequenceList)
-        } else {
-          list = this.sequenceList
-        }
-        // 将变化后的列表传入播放器中
-        this.resetCurrentIndex(list)
-        this.setPlaylist(list)
-      },
-      // 在传入变化后的播放列表时 当前歌曲不变化(index不变化)
-      resetCurrentIndex (list) {
-        // 在新的list里找到当前歌曲对应的索引
-        let index = list.findIndex((item) => {
-          return item.id === this.currentSong.id
-        })
-        this.setCurrentIndex(index)
-      },
       ...mapMutations({
-        setFullScreen: 'SET_FULL_SCREEN',
-        setPlayingState: 'SET_PLAYING_STATE',
-        setCurrentIndex: 'SET_CURRENT_INDEX',
-        setPlayMode: 'SET_PLAY_MODE',
-        setPlaylist: 'SET_PLAYLIST'
+        setFullScreen: 'SET_FULL_SCREEN'
       })
     },
     watch: {

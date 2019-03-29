@@ -4,8 +4,8 @@
       <div class="list-wrapper" @click.stop>
         <div class="list-header">
           <h1 class="title">
-            <i class="icon"></i>
-            <span class="text"></span>
+            <i class="icon" :class="iconMode" @click="changeMode"></i>
+            <span class="text" @click="changeMode">{{modeText}}</span>
             <span class="clear" @click="showComfirm">
               <i class="icon-clear"></i>
             </span>
@@ -42,14 +42,14 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import { mapGetters, mapMutations, mapActions } from 'vuex'
+  import { mapActions } from 'vuex'
   import { playMode } from 'common/js/config'
   import Scroll from 'base/scroll/scroll'
   import Comfirm from 'base/comfirm/comfirm'
-  //  import { playerMixin } from 'common/js/mixin'
+  import { playerMixin } from 'common/js/mixin'
 
   export default {
-//    mixins: [playerMixin],
+    mixins: [playerMixin],
     data () {
       return {
         // 显示标志
@@ -57,12 +57,10 @@
       }
     },
     computed: {
-      ...mapGetters([
-        'sequenceList',
-        'currentSong',
-        'playlist',
-        'mode'
-      ])
+      // mapGetters的组件放在了mixins中引用
+      modeText () {
+        return this.mode === playMode.sequence ? '顺序播放' : this.mode === playMode.random ? '随机播放' : '单曲循环'
+      }
     },
     methods: {
       // 显示播放列表 激活列表滚动事件并把当前歌曲放在列表首位
@@ -93,7 +91,7 @@
           })
         }
         this.setCurrentIndex(index)
-        this.setPlayState(true)
+        this.setPlayingState(true)
       },
       // 当前播放歌曲滚动到列表首位
       scrollToCurrent (current) {
@@ -116,10 +114,6 @@
       showComfirm () {
         this.$refs.comfirm.show()
       },
-      ...mapMutations({
-        setCurrentIndex: 'SET_CURRENT_INDEX',
-        setPlayState: 'SET_PLAYING_STATE'
-      }),
       ...mapActions([
         'deleteSong',
         'deleteSongList'
@@ -177,7 +171,7 @@
           .icon
             margin-right: 10px
             font-size: 30px
-            color: $color-theme-d
+            color: $color-mi-yellow
           .text
             flex: 1
             font-size: $font-size-medium
