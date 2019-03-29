@@ -103,16 +103,18 @@
   import { prefixStyle } from 'common/js/dom'
   import ProgressBar from 'base/progress-bar/progress-bar'
   import ProgressCircle from 'base/progress-circle/progress-circle'
-  import { playMode } from 'common/js/config'
   import { shuffle } from 'common/js/util'
   import Lyric from 'lyric-parser'
   import Scroll from 'base/scroll/scroll'
   import Playlist from 'components/playlist/playlist'
+  import { playMode } from 'common/js/config'
+//  import { playerMixin } from 'common/js/mixin'
 
   const transform = prefixStyle('transform')
   const transitionDuration = prefixStyle('transitionDuration')
 
   export default {
+//    mixins: [playerMixin],
     data () {
       return {
         // 当前歌曲是否准备播放
@@ -139,9 +141,9 @@
       miniIcon () {
         return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
       },
-      iconMode () {
-        return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
-      },
+     iconMode () {
+       return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
+     },
       // 旋转的CD样式
       cdCls () {
         return this.playing ? 'play' : 'play pause'

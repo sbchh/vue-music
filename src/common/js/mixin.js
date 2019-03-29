@@ -1,6 +1,7 @@
-// 通用组件接口 只定义方法 不定义具体操作
+// 通用组件接口 只定义方法 不定义具体操作 方便复用组件
 
 import { mapGetters } from 'vuex'
+// import { playMode } from 'common/js/config'
 
 export const playlistMixin = {
   computed: {
@@ -29,3 +30,14 @@ export const playlistMixin = {
     }
   }
 }
+
+// export const playerMixin = {
+//   computed: {
+//     iconMode () {
+//       return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
+//     },
+//     ...mapGetters([
+//       'mode'
+//     ])
+//   }
+// }

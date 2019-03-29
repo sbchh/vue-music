@@ -6,23 +6,26 @@
           <h1 class="title">
             <i class="icon"></i>
             <span class="text"></span>
-            <span class="clear">
+            <span class="clear" @click="showComfirm">
               <i class="icon-clear"></i>
             </span>
           </h1>
         </div>
-        <div class="list-content">
-          <li class="item">
-            <i class="current"></i>
-            <span class="text"></span>
-            <span class="like">
+        <scroll class="list-content" :data="sequenceList" ref="listContent">
+          <transition-group name="list" tag="ul">
+            <li class="item" v-for="(item,index) in sequenceList" :key="item.id" @click="selectItem(item,index)"
+                ref="listItem">
+              <i class="current" :class="getCurrentIcon(item)" ref="currentIcon"></i>
+              <span class="text">{{item.name}}</span>
+              <span class="like">
               <i class="icon-not-favorite"></i>
             </span>
-            <span class="delete">
+              <span class="delete" @click.stop="deleteOne(item)">
               <i class="icon-delete"></i>
             </span>
-          </li>
-        </div>
+            </li>
+          </transition-group>
+        </scroll>
         <div class="list-operate">
           <div class="add">
             <i class="icon-add"></i>
@@ -33,27 +36,107 @@
           <span>关闭</span>
         </div>
       </div>
+      <comfirm ref="comfirm" @comfirm="deleteSongList" text="是否清空播放列表" comfirmBtnText="清空"></comfirm>
     </div>
   </transition>
 </template>
 
 <script type="text/ecmascript-6">
+  import { mapGetters, mapMutations, mapActions } from 'vuex'
+  import { playMode } from 'common/js/config'
+  import Scroll from 'base/scroll/scroll'
+  import Comfirm from 'base/comfirm/comfirm'
+  //  import { playerMixin } from 'common/js/mixin'
+
   export default {
+//    mixins: [playerMixin],
     data () {
       return {
         // 显示标志
         showFlag: false
       }
     },
+    computed: {
+      ...mapGetters([
+        'sequenceList',
+        'currentSong',
+        'playlist',
+        'mode'
+      ])
+    },
     methods: {
-      // 显示播放列表
+      // 显示播放列表 激活列表滚动事件并把当前歌曲放在列表首位
       show () {
         this.showFlag = true
+        setTimeout(() => {
+          this.$refs.listContent.refresh()
+          this.scrollToCurrent(this.currentSong)
+        }, 20)
       },
       // 隐藏播放列表
       hide () {
         this.showFlag = false
+      },
+      // 设置当前播放列表当前歌曲的样式
+      getCurrentIcon (item) {
+        if (this.currentSong.id === item.id) {
+          return 'icon-play'
+        }
+        return ''
+      },
+      // 选择播放对应歌曲
+      selectItem (item, index) {
+        // 如果是随机播放 将当前歌曲下标对应的随机播放下标找到
+        if (this.mode === playMode.random) {
+          index = this.playlist.findIndex((song) => {
+            return song.id === item.id
+          })
+        }
+        this.setCurrentIndex(index)
+        this.setPlayState(true)
+      },
+      // 当前播放歌曲滚动到列表首位
+      scrollToCurrent (current) {
+        // 获取当前歌曲在顺序列表的id
+        const index = this.sequenceList.findIndex((song) => {
+          return current.id === song.id
+        })
+        // 界面定位到当前歌曲
+        this.$refs.listContent.scrollToElement(this.$refs.listItem[index], 300)
+      },
+      // 删除播放列表中的歌曲
+      deleteOne (item) {
+        this.deleteSong(item)
+        // 如果列表为空 隐藏列表界面
+        if (!this.playlist.length) {
+          this.hide()
+        }
+      },
+      // 清空播放列表提示框
+      showComfirm () {
+        this.$refs.comfirm.show()
+      },
+      ...mapMutations({
+        setCurrentIndex: 'SET_CURRENT_INDEX',
+        setPlayState: 'SET_PLAYING_STATE'
+      }),
+      ...mapActions([
+        'deleteSong',
+        'deleteSongList'
+      ])
+    },
+    watch: {
+      currentSong (newSong, oldSong) {
+        // 如果播放列表不显示或歌曲未变化
+        if (!this.showFlag || newSong.id === oldSong.id) {
+          return
+        }
+        this.scrollToCurrent(newSong)
       }
+    },
+    components: {
+      Scroll,
+      Comfirm
     }
   }
 </script>
@@ -121,7 +204,7 @@
             flex: 0 0 20px
             width: 20px
             font-size: $font-size-small
-            color: $color-theme-d
+            color: $color-mi-yellow
           .text
             flex: 1
             no-wrap()
