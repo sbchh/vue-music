@@ -13,9 +13,14 @@
       <div class="shortcut" v-show="!query">
         <switches :switches="switches" :currentIndex="currentIndex" @switch="switchItem"></switches>
         <div class="list-wrapper">
-          <scroll class="list-scroll" v-if="currentIndex===0" :data="playHistory">
+          <scroll class="list-scroll" v-if="currentIndex===0" :data="playHistory" ref="songList">
             <div class="list-inner">
               <song-list :songs="playHistory" @select="selectSong"></song-list>
+            </div>
+          </scroll>
+          <scroll class="list-scroll" v-if="currentIndex===1" :data="searchHistory" ref="searchList">
+            <div class="list-inner">
+              <search-list :searches="searchHistory" @delete="deleteSearchHistory" @select="addQuery"></search-list>
             </div>
           </scroll>
         </div>
@@ -37,6 +42,7 @@
   import { mapGetters, mapActions } from 'vuex'
   import SongList from 'base/song-list/song-list'
   import Song from 'common/js/song'
+  import SearchList from 'base/search-list/search-list'
 
   export default {
     mixins: [searchMixin],
@@ -57,13 +63,21 @@
     },
     computed: {
       ...mapGetters([
-        'playHistory'
+        'playHistory',
+        'searchHistory'
       ])
     },
     methods: {
       // 派发显示添加到列表事件
       show () {
         this.showFlag = true
+        setTimeout(() => {
+          if (!this.currentIndex) {
+            this.$refs.songList.refresh()
+          } else {
+            this.$refs.searchList.refresh()
+          }
+        })
       },
       // 派发隐藏添加到列表事件
       hide () {
@@ -96,14 +110,15 @@
       Suggest,
       Switches,
       Scroll,
-      SongList
+      SongList,
+      SearchList
     }
   }
 </script>
 
 <style lang="stylus" scoped>
-  @import "../../common/stylus/variable"
-  @import "../../common/stylus/mixin"
+  @import "~common/stylus/variable"
+  @import "~common/stylus/mixin"
 
   .add-song
     position: fixed
@@ -134,13 +149,13 @@
           font-size: 20px
           color: $color-theme
 
-    .search-box-wrapper
+    .shortcut-wrapper
       margin: 20px
     .shortcut
-      margin-top: 5px
+      margin: 10px
       .list-wrapper
         position: absolute
-        top: 170px
+        top: 165px
         bottom: 0
         width: 100%
         .list-scroll
