@@ -1,5 +1,6 @@
 <template>
-  <scroll class="suggest" :data="result" :pullup="pullup" @scrollToEnd="SearchMore" @beforeScroll="listScroll"
+  <scroll class="suggest" :data="result" :pullup="pullup" :beforeScroll="beforeScroll" @scrollToEnd="SearchMore"
+          @beforeScroll="listScroll"
           ref="suggest">
     <ul class="suggest-list">
       <li class="suggest-item" v-for="(item,index) in result" :key="index" @click="selectItem(item)">
@@ -27,13 +28,11 @@
   import Singer from 'common/js/singer'
   import { mapMutations, mapActions } from 'vuex'
   import NoResult from 'base/no-result/no-result'
-  //  import {playlistMixin} from 'common/js/mixin'
 
   const TYPE_SINGER = 'singer'
   const perpage = 20
 
   export default {
-//    mixins:[playlistMixin],
     props: {
       // 搜索建议与搜索框内容相关
       query: {
@@ -140,7 +139,7 @@
       // 检查是否有更多的搜索数据
       _checkMore (item) {
         const songList = item.song
-        if (!songList.list.length || (songList.curnum + songList.curpage * perpage) > songList.totalnum) {
+        if (!songList.list.length || (songList.curnum + songList.curpage * perpage) >= songList.totalnum) {
           this.hasMore = false
         }
       },

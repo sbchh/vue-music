@@ -78,6 +78,7 @@
           })
         }
         if (this.beforeScroll) {
+          // 派发一个滚动前判断的事件
           this.scroll.on('beforeScrollStart', () => {
             this.$emit('beforeScroll')
           })
