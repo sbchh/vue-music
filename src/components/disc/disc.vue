@@ -28,13 +28,13 @@
     },
     data () {
       return {
-        songs: () => []
+        songs: []
       }
     },
     methods: {
       _getCdList () {
         if (!this.disc.dissid) {
-          this.$router.push('/recommend')
+          this.$router.push('/recommend/')
           return
         }
         getCdList(this.disc.dissid).then((res) => {
