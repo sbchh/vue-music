@@ -1,6 +1,6 @@
 // 状态管理 只保留最基础的数据
 import { playMode } from 'common/js/config'
-import { loadSearch, loadPlay } from 'common/js/catch'
+import { loadSearch, loadPlay, loadFavorite } from 'common/js/catch'
 
 const state = {
   singer: {},
@@ -21,7 +21,9 @@ const state = {
   // 搜索历史
   searchHistory: loadSearch(),
   // 播放历史
-  playHistory: loadPlay()
+  playHistory: loadPlay(),
+  // 收藏列表
+  favoriteList: loadFavorite()
 }
 
 export default state

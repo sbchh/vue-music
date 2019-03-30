@@ -4,8 +4,7 @@
 import * as types from './mutation-types'
 import { playMode } from '../common/js/config'
 import { shuffle } from '../common/js/util'
-import { saveSearch, deleteSearch, clearSearch } from 'common/js/catch'
-import { savePlay } from '../common/js/catch'
+import { saveSearch, deleteSearch, clearSearch, savePlay, saveFavorite, deleteFavorite } from 'common/js/catch'
 
 // 选择歌曲播放
 export const selectPlay = function ({commit, state}, {list, index}) {
@@ -104,6 +103,7 @@ export const clearSearchHistory = function ({commit}) {
   commit(types.SET_SEARCH_HISTORY, clearSearch())
 }
 
+// 删除播放列表中的歌曲
 export const deleteSong = function ({commit, state}, song) {
   let playlist = state.playlist.slice()
   let sequenceList = state.sequenceList.slice()
@@ -127,6 +127,7 @@ export const deleteSong = function ({commit, state}, song) {
   commit(types.SET_PLAYING_STATE, playingState)
 }
 
+// 清空播放列表
 export const deleteSongList = function ({commit}) {
   // 提交空数组到列表
   commit(types.SET_PLAYLIST, [])
@@ -138,4 +139,14 @@ export const deleteSongList = function ({commit}) {
 // 保存播放历史
 export const savePlayHistory = function ({commit}, song) {
   commit(types.SET_PLAY_HISTORY, savePlay(song))
+}
+
+// 保存收藏记录
+export const saveFavoriteList = function ({commit}, song) {
+  commit(types.SET_FAVORITE_LIST, saveFavorite(song))
+}
+
+// 删除收藏记录
+export const deleteFavoriteList = function ({commit}, song) {
+  commit(types.SET_FAVORITE_LIST, deleteFavorite(song))
 }

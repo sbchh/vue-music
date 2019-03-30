@@ -11,13 +11,28 @@
         <i class="icon-play"></i>
         <span class="text">随机播放全部</span>
       </div>
-      <div class="list-wrapper" ref="listWrapper"></div>
+      <div class="list-wrapper" ref="listWrapper">
+        <scroll class="list-scroll" v-if="currentIndex===0" :data="favoriteList" ref="favoriteList">
+          <div class="list-inner">
+            <song-list :songs="favoriteList" @select="selectSong"></song-list>
+          </div>
+        </scroll>
+        <scroll class="list-scroll" v-if="currentIndex===1" :data="playHistory" ref="playList">
+          <div class="list-inner">
+            <song-list :songs="playHistory" @select="selectSong"></song-list>
+          </div>
+        </scroll>
+      </div>
     </div>
   </transition>
 </template>
 
 <script type="text/ecmascript-6">
   import Switches from 'base/switches/switches'
+  import Scroll from 'base/scroll/scroll'
+  import SongList from 'base/song-list/song-list'
+  import Song from 'common/js/song'
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
     data () {
@@ -29,6 +44,12 @@
         ]
       }
     },
+    computed: {
+      ...mapGetters([
+        'favoriteList',
+        'playHistory'
+      ])
+    },
     methods: {
       // 切换标签的下标
       switchItem (index) {
@@ -37,10 +58,21 @@
       // 返回首页
       back () {
         this.$router.push('/')
-      }
+      },
+      // 点击最近播放中的歌曲 插入到播放列表中
+      selectSong (song, index) {
+        if (index !== 0) {
+          this.insertSong(new Song(song))
+        }
+      },
+      ...mapActions([
+        'insertSong'
+      ])
     },
     components: {
-      Switches
+      Switches,
+      Scroll,
+      SongList
     }
   }
 </script>

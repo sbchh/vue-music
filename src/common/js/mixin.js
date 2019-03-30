@@ -42,7 +42,8 @@ export const playerMixin = {
       'sequenceList',
       'currentSong',
       'playlist',
-      'mode'
+      'mode',
+      'favoriteList'
     ])
   },
   methods: {
@@ -71,12 +72,38 @@ export const playerMixin = {
       })
       this.setCurrentIndex(index)
     },
+    // 根据当前歌曲设置收藏图标
+    getFavoriteIcon (song) {
+      if (this._isFavorite(song)) {
+        return 'icon-favorite'
+      }
+      return 'icon-not-favorite'
+    },
+    // 切换收藏图标状态
+    toggleFavorite (song) {
+      if (this._isFavorite(song)) {
+        this.deleteFavoriteList(song)
+      } else {
+        this.saveFavoriteList(song)
+      }
+    },
+    // 判断是否为收藏
+    _isFavorite (song) {
+      const index = this.favoriteList.findIndex((item) => {
+        return song.id === item.id
+      })
+      return index > -1
+    },
     ...mapMutations({
       setPlayingState: 'SET_PLAYING_STATE',
       setCurrentIndex: 'SET_CURRENT_INDEX',
       setPlayMode: 'SET_PLAY_MODE',
       setPlaylist: 'SET_PLAYLIST'
-    })
+    }),
+    ...mapActions([
+      'saveFavoriteList',
+      'deleteFavoriteList'
+    ])
   }
 }
 
