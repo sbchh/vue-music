@@ -75,16 +75,14 @@
         getRecommend().then((res) => {
           if (res.code === ERR_OK) {
             this.recommends = res.data.slider
-//            console.log(res.data.slider)
           }
         })
       },
-      // 获取歌单数据
+      // 获取热门歌单数据
       _getDiscList () {
         getDiscList().then((res) => {
           if (res.code === ERR_OK) {
             this.discList = res.data.list
-//            console.log(res.data.list)
           }
         })
       },

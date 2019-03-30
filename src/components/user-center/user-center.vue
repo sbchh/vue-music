@@ -75,7 +75,7 @@
     methods: {
       // 适配playlistMixin底部区域
       handlePlaylist (playlist) {
-        const bottom = playlist.length ? '60px' : ''
+        const bottom = playlist.length > 0 ? '60px' : ''
         this.$refs.listWrapper.style.bottom = bottom
         // 根据不同页面进行相应滚动刷新
         this.$refs.favorList && this.$refs.favorList.refresh()
@@ -90,10 +90,8 @@
         this.$router.back()
       },
       // 点击最近播放中的歌曲 插入到播放列表中
-      selectSong (song, index) {
-        if (index !== 0) {
-          this.insertSong(new Song(song))
-        }
+      selectSong (song) {
+        this.insertSong(new Song(song))
       },
       // 随机播放全部
       randomPlayAll () {

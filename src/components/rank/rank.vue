@@ -30,6 +30,8 @@
   import { playlistMixin } from 'common/js/mixin'
   import { mapMutations } from 'vuex'
 
+  const MV_ID = 201
+
   export default {
     mixins: [playlistMixin],
     created () {
@@ -58,7 +60,13 @@
       _getTopList () {
         getTopList().then((res) => {
           if (res.code === ERR_OK) {
-            this.topList = res.data.topList
+            let list = res.data.topList
+            // 去掉MV榜单的数据
+            let index = list.findIndex((item) => {
+              return item.id === MV_ID
+            })
+            list.splice(index, 1)
+            this.topList = list
           }
         })
       },
