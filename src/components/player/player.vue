@@ -316,6 +316,7 @@
       // 获取歌词并解析 (排除没有歌词的情况)
       _getLyric () {
         this.currentSong.getLyric().then((lyric) => {
+          // 判断当前的歌词是否为播放中的歌词 是则继续
           if (this.currentSong.lyric !== lyric) {
             return
           }
@@ -454,8 +455,9 @@
         // 保证从后台切换到前台 歌曲可以重新播放
         clearTimeout(this.timer)
         this.timer = setTimeout(() => {
+          // 保证play()先执行
           this.$refs.audio.play()
-          // 获取歌词
+          // 异步获取歌词
           this._getLyric()
         }, 300)
       },

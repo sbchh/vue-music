@@ -15,7 +15,7 @@
     </div>
     <div class="bg-layer" ref="layer"></div>
     <scroll class="list" @scroll="scroll" :probe-type="probeType" :data="songs"
-            ref="list">
+            ref="list" :listen-scroll="listenScroll">
       <div class="song-list-wrapper">
         <song-list :rank="rank" @select="selectItem" :songs="songs"></song-list>
       </div>

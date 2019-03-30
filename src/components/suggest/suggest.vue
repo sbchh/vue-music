@@ -56,11 +56,12 @@
         // 标志位-有更多的数据可供上拉
         hasMore: true,
         // 滑动前判断input框是否激活
-        beforeScroll: true
+        beforeScroll: true,
+        // 搜索结果显示一次歌手名字
+        onceSinger: true
       }
     },
     methods: {
-//      handlePlaylist(this.query){},
       // 请求服务端 查询输入内容
       searchQuery () {
         // 每执行次查询 把suggest组件置为顶部
@@ -146,8 +147,9 @@
       // 处理得到的搜索结果 区分歌手与歌曲
       _genResult (data) {
         let ret = []
-        if (data.zhida && data.zhida.singerid) {
+        if (this.onceSinger && data.zhida.singerid && data.zhida.singerid) {
           ret.push({...data.zhida, ...{type: TYPE_SINGER}})
+          this.onceSinger = false
         }
         if (data.song) {
           ret = ret.concat(this._normalizeSongs(data.song.list))
@@ -169,6 +171,7 @@
       // 搜索词变化时 进行查询操作
       query (newQuery) {
         this.searchQuery(newQuery)
+        this.onceSinger = true
       }
     },
     components: {
