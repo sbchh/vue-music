@@ -72,6 +72,7 @@
           if (res.code === ERR_OK) {
             this.result = this._genResult(res.data)
             this._checkMore(res.data)
+            this.onceSinger = false
           }
         })
       },
@@ -149,7 +150,6 @@
         let ret = []
         if (this.onceSinger && data.zhida.singerid && data.zhida.singerid) {
           ret.push({...data.zhida, ...{type: TYPE_SINGER}})
-          this.onceSinger = false
         }
         if (data.song) {
           ret = ret.concat(this._normalizeSongs(data.song.list))
