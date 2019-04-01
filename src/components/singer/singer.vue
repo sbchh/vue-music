@@ -50,13 +50,13 @@
       _getSingerList () {
         getSingerList().then((res) => {
           if (res.code === ERR_OK) {
-            this.singers = this._nomalizeSinger(res.data.list)
+            this.singers = this._normalizeSinger(res.data.list)
 //            console.log(this.singers)
           }
         })
       },
       // 重点 序列化歌手数据
-      _nomalizeSinger (list) {
+      _normalizeSinger (list) {
         // 定义热门歌手数组
         let map = {
           hot: {

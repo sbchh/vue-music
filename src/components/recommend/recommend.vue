@@ -3,13 +3,15 @@
     <scroll ref="scroll" class="recommend-content" :data="discList">
       <div>
         <div v-if="recommends.length" class="slider-wrapper">
-          <slider>
-            <div v-for="(item, index) in recommends" :key='index'>
-              <a :href="item.linkUrl">
-                <img class="needclick" @load="loadImage" :src="item.picUrl"/>
-              </a>
-            </div>
-          </slider>
+          <div class="slider-content">
+            <slider ref="slider">
+              <div v-for="(item, index) in recommends" :key='index'>
+                <a :href="item.linkUrl">
+                  <img class="needclick" @load="loadImage" :src="item.picUrl"/>
+                </a>
+              </div>
+            </slider>
+          </div>
         </div>
         <div class="recommend-list">
           <h1 class="list-title">热门歌单推荐</h1>
@@ -56,6 +58,11 @@
       this._getRecommend()
       this._getDiscList()
     },
+    activated () {
+      setTimeout(() => {
+        this.$refs.slider && this.$refs.slider.refresh()
+      }, 20)
+    },
     methods: {
       // 与mixins配套 重写playList方法 使页面布局底部有空间放mini播放器
       handlePlaylist (playlist) {
@@ -91,8 +98,12 @@
       // 监听图片加载事件
       loadImage () {
         if (!this.checkLoaded) {
-          this.$refs.scroll.refresh()
-          this.checkLoaded = true
+          if (!this.checkloaded) {
+            this.checkloaded = true
+            setTimeout(() => {
+              this.$refs.scroll.refresh()
+            }, 20)
+          }
         }
       },
       ...mapMutations({
@@ -122,7 +133,15 @@
       .slider-wrapper
         position: relative
         width: 100%
+        height: 0
+        padding-top: 40%
         overflow: hidden
+        .slider-content
+          position: absolute
+          top: 0
+          left: 0
+          width: 100%
+          height: 100%
       .recommend-list
         .list-title
           height: 65px

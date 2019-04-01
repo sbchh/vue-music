@@ -65,9 +65,9 @@
       // 请求服务端 查询输入内容
       searchQuery () {
         // 每执行次查询 把suggest组件置为顶部
+        this.$refs.suggest.scrollTo(0, 0)
         this.page = 1
         this.hasMore = true
-        this.$refs.suggest.scrollTo(0, 0)
         getSearchRet(this.query, this.page, this.showSinger, perpage).then((res) => {
           if (res.code === ERR_OK) {
             this.result = this._genResult(res.data)
@@ -170,8 +170,8 @@
     watch: {
       // 搜索词变化时 进行查询操作
       query (newQuery) {
-        this.searchQuery(newQuery)
         this.onceSinger = true
+        this.searchQuery(newQuery)
       }
     },
     components: {
