@@ -37,7 +37,7 @@
     created () {
       setTimeout(() => {
         this._getTopList()
-      }, 800)
+      }, 500)
     },
     data () {
       return {

@@ -36,14 +36,12 @@
       },
       getRankCls (index) {
         if (index <= 2) {
-          return `icon icon${index}`
+          return index === 0 ? `first-text` : index === 1 ? 'second-text' : 'third-text'
         }
         return 'text'
       },
       getRankText (index) {
-        if (index > 2) {
-          return index + 1
-        }
+        return index + 1
       }
     }
   }
@@ -65,20 +63,22 @@
         width: 25px
         margin-right: 30px
         text-align: center
-        .icon
-          display: inline-block
-          width: 25px
-          height: 24px
-          background-size: 25px 24px
-          &.icon0
-            bg-image('first')
-          &.icon1
-            bg-image('second')
-          &.icon2
-            bg-image('third')
+        .first-text
+          color: $color-text-first
+          font-size: $font-size-large
+          font-weight: bold
+        .second-text
+          color: $color-text-Second
+          font-size: $font-size-large
+          font-weight: bold
+        .third-text
+          color: $color-text-Third
+          font-size: $font-size-large
+          font-weight: bold
         .text
           color: $color-theme
           font-size: $font-size-large
+
       .content
         flex: 1
         line-height: 20px
